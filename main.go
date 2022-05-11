@@ -13,6 +13,7 @@ func main() {
 
 	r.HandleFunc("/api/v1/authors", handlers.GetAllAuthors).Methods("GET")
 	r.HandleFunc("/api/v1/authors/{id}", handlers.GetAuthorById).Methods("GET")
+	r.HandleFunc("/api/v1/authors", handlers.CreateAuthor).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

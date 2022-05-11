@@ -73,3 +73,13 @@ func GetBookById(id int) []Author {
 	}
 	return authors
 }
+
+func CreateAuthor(author Author) error {
+	query := `INSERT INTO authors(first_name, last_name) VALUES(?, ?);`
+	_, err := db.Query(query, author.FirstName, author.LastName)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
