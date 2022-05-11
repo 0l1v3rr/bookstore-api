@@ -6,10 +6,13 @@ import (
 	"strconv"
 
 	"github.com/0l1v3rr/bookstore-api/pkg/models"
+	"github.com/0l1v3rr/bookstore-api/pkg/utils"
 	"github.com/gorilla/mux"
 )
 
 func GetAllAuthors(w http.ResponseWriter, r *http.Request) {
+	utils.SetCors(w)
+
 	books := models.GetAllAuthor()
 	res, _ := json.Marshal(books)
 
@@ -19,20 +22,23 @@ func GetAllAuthors(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAuthorById(w http.ResponseWriter, r *http.Request) {
+	utils.SetCors(w)
+
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		panic(err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
 	}
 
-	books := models.GetBookById(id)
-	if len(books) == 0 {
-		w.Header().Set("Content-Type", "application/json")
+	authors := models.GetAuthorById(id)
+	if len(authors) == 0 {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	res, _ := json.Marshal(books[0])
+	res, _ := json.Marshal(authors[0])
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -40,6 +46,8 @@ func GetAuthorById(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateAuthor(w http.ResponseWriter, r *http.Request) {
+	utils.SetCors(w)
+
 	decoder := json.NewDecoder(r.Body)
 	var author models.Author
 	err := decoder.Decode(&author)

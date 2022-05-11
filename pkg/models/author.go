@@ -61,7 +61,7 @@ func GetAllAuthor() []Author {
 	return authors
 }
 
-func GetBookById(id int) []Author {
+func GetAuthorById(id int) []Author {
 	rows, err := db.Query("SELECT * FROM authors WHERE id = ?;", id)
 	if err != nil {
 		panic(err.Error())
