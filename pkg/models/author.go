@@ -75,11 +75,40 @@ func GetAuthorById(id int) []Author {
 }
 
 func CreateAuthor(author Author) error {
-	query := `INSERT INTO authors(first_name, last_name) VALUES(?, ?);`
+	query := "INSERT INTO authors(first_name, last_name) VALUES(?, ?);"
 	_, err := db.Query(query, author.FirstName, author.LastName)
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func UpdateAuthor(author Author, id int) error {
+	query := "UPDATE authors SET first_name = ?, last_name = ? WHERE id = ?;"
+	_, err := db.Query(query, author.FirstName, author.LastName, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DeleteAuthor(id int) error {
+	query := "DELETE FROM authors WHERE id = ?;"
+	_, err := db.Query(query, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func AuthorExists(id int) bool {
+	authors := GetAuthorById(id)
+	if len(authors) < 1 {
+		return false
+	}
+
+	return true
 }

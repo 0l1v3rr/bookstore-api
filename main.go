@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -8,12 +9,16 @@ import (
 	"github.com/gorilla/mux"
 )
 
+const PORT = 8080
+
 func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/api/v1/authors", handlers.GetAllAuthors).Methods("GET")
 	r.HandleFunc("/api/v1/authors/{id}", handlers.GetAuthorById).Methods("GET")
 	r.HandleFunc("/api/v1/authors", handlers.CreateAuthor).Methods("POST")
+	r.HandleFunc("/api/v1/authors/{id}", handlers.UpdateAuthor).Methods("PUT")
+	r.HandleFunc("/api/v1/authors/{id}", handlers.DeleteAuthor).Methods("DELETE")
 
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", PORT), r))
 }
