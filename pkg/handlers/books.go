@@ -50,3 +50,94 @@ func GetBookById(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 }
+
+func CreateBook(w http.ResponseWriter, r *http.Request) {
+	utils.SetCors(w)
+
+	decoder := json.NewDecoder(r.Body)
+	var book models.RequestBook
+	err := decoder.Decode(&book)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	author := models.GetAuthorById(book.AuthorId)
+	currentBook := models.Book{
+		Title:       book.Title,
+		Description: book.Description,
+		Author:      author[0],
+	}
+	err = models.CreateBook(currentBook)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	res, _ := json.Marshal(currentBook)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	w.Write(res)
+}
+
+func UpdateBook(w http.ResponseWriter, r *http.Request) {
+	utils.SetCors(w)
+
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	decoder := json.NewDecoder(r.Body)
+	var book models.RequestBook
+	err = decoder.Decode(&book)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	author := models.GetAuthorById(book.AuthorId)
+	currentBook := models.Book{
+		Title:       book.Title,
+		Description: book.Description,
+		Author:      author[0],
+	}
+	err = models.UpdateBook(currentBook, id)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	res, _ := json.Marshal(currentBook)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+}
+
+func DeleteBook(w http.ResponseWriter, r *http.Request) {
+	utils.SetCors(w)
+
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	err = models.DeleteBook(id)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	w.WriteHeader(http.StatusAccepted)
+}

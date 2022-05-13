@@ -22,6 +22,9 @@ func main() {
 
 	r.HandleFunc("/api/v1/books", handlers.GetAllBooks).Methods("GET")
 	r.HandleFunc("/api/v1/books/{id}", handlers.GetBookById).Methods("GET")
+	r.HandleFunc("/api/v1/books", handlers.CreateBook).Methods("POST")
+	r.HandleFunc("/api/v1/books/{id}", handlers.UpdateBook).Methods("PATCH")
+	r.HandleFunc("/api/v1/books/{id}", handlers.DeleteBook).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", PORT), r))
 }

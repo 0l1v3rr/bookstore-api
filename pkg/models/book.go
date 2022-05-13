@@ -12,6 +12,12 @@ type Book struct {
 	Author      Author `json:"author"`
 }
 
+type RequestBook struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	AuthorId    int    `json:"author_id"`
+}
+
 func BookRowMapper(rows *sql.Rows) ([]Book, error) {
 	var books []Book
 
@@ -72,4 +78,33 @@ func GetBookById(id int) (Book, error) {
 	}
 
 	return book[0], nil
+}
+
+func CreateBook(book Book) error {
+	query := "INSERT INTO books(title, description, author_id) VALUES (?, ?, ?);"
+	_, err := db.Query(query, book.Title, book.Description, book.Author.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func UpdateBook(book Book, id int) error {
+	query := "UPDATE books SET title = ?, description = ?, author_id = ? WHERE id = ?;"
+	_, err := db.Query(query, book.Title, book.Description, book.Author.ID, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DeleteBook(id int) error {
+	_, err := db.Query("DELETE FROM books WHERE id = ?;", id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
