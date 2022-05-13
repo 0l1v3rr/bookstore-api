@@ -47,31 +47,32 @@ func AuthorRowMapper(rows *sql.Rows) ([]Author, error) {
 	return authors, nil
 }
 
-func GetAllAuthor() []Author {
+func GetAllAuthor() ([]Author, error) {
 	rows, err := db.Query("SELECT * FROM authors;")
 	if err != nil {
-		panic(err.Error())
+		return nil, err
 	}
 
 	authors, err := AuthorRowMapper(rows)
 	if err != nil {
-		panic(err.Error())
+		return nil, err
 	}
 
-	return authors
+	return authors, nil
 }
 
-func GetAuthorById(id int) []Author {
+func GetAuthorById(id int) (Author, error) {
 	rows, err := db.Query("SELECT * FROM authors WHERE id = ?;", id)
 	if err != nil {
-		panic(err.Error())
+		return Author{}, err
 	}
 
 	authors, err := AuthorRowMapper(rows)
 	if err != nil {
-		panic(err.Error())
+		return Author{}, err
 	}
-	return authors
+
+	return authors[0], nil
 }
 
 func CreateAuthor(author Author) error {
@@ -105,7 +106,16 @@ func DeleteAuthor(id int) error {
 }
 
 func AuthorExists(id int) bool {
-	authors := GetAuthorById(id)
+	rows, err := db.Query("SELECT * FROM authors WHERE id = ?;", id)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	authors, err := AuthorRowMapper(rows)
+	if err != nil {
+		panic(err.Error())
+	}
+
 	if len(authors) < 1 {
 		return false
 	}

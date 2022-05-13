@@ -63,11 +63,11 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	author := models.GetAuthorById(book.AuthorId)
+	author, _ := models.GetAuthorById(book.AuthorId)
 	currentBook := models.Book{
 		Title:       book.Title,
 		Description: book.Description,
-		Author:      author[0],
+		Author:      author,
 	}
 	err = models.CreateBook(currentBook)
 	if err != nil {
@@ -102,11 +102,11 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	author := models.GetAuthorById(book.AuthorId)
+	author, _ := models.GetAuthorById(book.AuthorId)
 	currentBook := models.Book{
 		Title:       book.Title,
 		Description: book.Description,
-		Author:      author[0],
+		Author:      author,
 	}
 	err = models.UpdateBook(currentBook, id)
 	if err != nil {

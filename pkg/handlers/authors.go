@@ -13,7 +13,13 @@ import (
 func GetAllAuthors(w http.ResponseWriter, r *http.Request) {
 	utils.SetCors(w)
 
-	books := models.GetAllAuthor()
+	books, err := models.GetAllAuthor()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
 	res, _ := json.Marshal(books)
 
 	w.Header().Set("Content-Type", "application/json")
@@ -32,13 +38,13 @@ func GetAuthorById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authors := models.GetAuthorById(id)
-	if len(authors) == 0 {
-		w.WriteHeader(http.StatusNotFound)
+	authors, err := models.GetAuthorById(id)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
 		return
 	}
-
-	res, _ := json.Marshal(authors[0])
+	res, _ := json.Marshal(authors)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

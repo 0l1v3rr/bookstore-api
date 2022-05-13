@@ -41,10 +41,12 @@ func BookRowMapper(rows *sql.Rows) ([]Book, error) {
 		var book Book
 		id, _ := strconv.Atoi(string(values[0]))
 		authorId, _ := strconv.Atoi(string(values[3]))
+		author, _ := GetAuthorById(authorId)
+
 		book.ID = id
 		book.Title = string(values[1])
 		book.Description = string(values[2])
-		book.Author = GetAuthorById(authorId)[0]
+		book.Author = author
 
 		books = append(books, book)
 	}
