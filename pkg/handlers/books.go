@@ -93,6 +93,12 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	exists, _ := models.AuthorExists(id)
+	if !exists {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
 	decoder := json.NewDecoder(r.Body)
 	var book models.RequestBook
 	err = decoder.Decode(&book)
@@ -129,6 +135,12 @@ func DeleteBook(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
+		return
+	}
+
+	exists, _ := models.AuthorExists(id)
+	if !exists {
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 

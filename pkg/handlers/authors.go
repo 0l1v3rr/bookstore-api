@@ -87,7 +87,7 @@ func UpdateAuthor(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	exists := models.AuthorExists(id)
+	exists, _ := models.AuthorExists(id)
 	if !exists {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -126,7 +126,7 @@ func DeleteAuthor(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	exists := models.AuthorExists(id)
+	exists, _ := models.AuthorExists(id)
 	if !exists {
 		w.WriteHeader(http.StatusNotFound)
 		return

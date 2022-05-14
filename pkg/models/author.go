@@ -105,20 +105,20 @@ func DeleteAuthor(id int) error {
 	return nil
 }
 
-func AuthorExists(id int) bool {
+func AuthorExists(id int) (bool, error) {
 	rows, err := db.Query("SELECT * FROM authors WHERE id = ?;", id)
 	if err != nil {
-		panic(err.Error())
+		return false, err
 	}
 
 	authors, err := AuthorRowMapper(rows)
 	if err != nil {
-		panic(err.Error())
+		return false, err
 	}
 
 	if len(authors) < 1 {
-		return false
+		return false, nil
 	}
 
-	return true
+	return true, nil
 }

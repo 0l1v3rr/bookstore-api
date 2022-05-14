@@ -110,3 +110,21 @@ func DeleteBook(id int) error {
 
 	return nil
 }
+
+func BookExists(id int) (bool, error) {
+	rows, err := db.Query("SELECT * FROM books WHERE id = ?;", id)
+	if err != nil {
+		return false, err
+	}
+
+	books, err := BookRowMapper(rows)
+	if err != nil {
+		return false, err
+	}
+
+	if len(books) < 1 {
+		return false, nil
+	}
+
+	return true, nil
+}
